@@ -137,3 +137,5 @@ const CreditCard: React.FC<CreditCardProps> = ({
     </div>
   );
 };
+
+export default CreditCard

@@ -48,7 +48,7 @@ const CreditCard: React.FC<CreditCardProps> = ({
 
   return (
     <div 
-      className="w-full max-w-[500px] mx-auto my-8 perspective-1000 cursor-pointer"
+      className="w-full max-w-[400px] mx-auto my-8 perspective-1000 cursor-pointer"
       onClick={() => setIsFlipped(!isFlipped)}
     >
       <div 
@@ -67,7 +67,7 @@ const CreditCard: React.FC<CreditCardProps> = ({
       >
         {/* Front of card */}
         <div className={`
-          absolute inset-0 rounded-2xl p-8 backface-hidden
+          absolute inset-0 rounded-2xl p-6 backface-hidden
           ${theme === 'light' 
             ? 'bg-gradient-to-br from-slate-100 to-slate-200 text-gray-800' 
             : 'bg-gradient-to-br from-gray-900 to-black text-white'}
@@ -75,28 +75,28 @@ const CreditCard: React.FC<CreditCardProps> = ({
         `}>
           <div className="h-full flex flex-col justify-between">
             <div className="flex justify-between items-start">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-600 to-blue-500 opacity-80"></div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-600 to-blue-500 opacity-80"></div>
               <div className="text-right">
                 <p className="text-xs opacity-70 uppercase">{cardType || 'TARJETA'}</p>
               </div>
             </div>
             
             <div className="mt-auto">
-              <p className="text-2xl tracking-widest mb-6 font-mono">
+              <p className="text-lg md:text-xl tracking-widest mb-4 font-mono">
                 {formatCardNumber(cardNumber)}
               </p>
               
               <div className="flex justify-between items-end">
                 <div className="flex-1 min-w-0 mr-4">
                   <p className="text-xs opacity-70 mb-1">TITULAR</p>
-                  <p className="font-medium text-lg truncate uppercase">
+                  <p className="font-medium text-sm md:text-base truncate uppercase">
                     {cardName || 'TU NOMBRE'}
                   </p>
                 </div>
                 
                 <div>
                   <p className="text-xs opacity-70 mb-1">VENCE</p>
-                  <p className="font-medium text-lg">{cardExpiry || 'MM/AA'}</p>
+                  <p className="font-medium text-sm md:text-base">{cardExpiry || 'MM/AA'}</p>
                 </div>
               </div>
             </div>
@@ -112,19 +112,19 @@ const CreditCard: React.FC<CreditCardProps> = ({
           border border-white/20 shadow-xl
         `}>
           <div className="h-full flex flex-col">
-            <div className="w-full h-16 bg-gray-800 mt-8"></div>
+            <div className="w-full h-12 bg-gray-800 mt-6"></div>
             
-            <div className="px-8 py-4">
-              <div className="bg-gray-100 h-12 rounded flex items-center px-3">
+            <div className="px-6 py-4">
+              <div className="bg-gray-100 h-10 rounded flex items-center px-3">
                 <div className="ml-auto bg-white/40 backdrop-blur px-3 py-1 rounded mr-3">
-                  <span className="text-gray-800 font-mono tracking-wider text-lg">CVV</span>
+                  <span className="text-gray-800 font-mono tracking-wider text-sm">CVV</span>
                 </div>
               </div>
             </div>
             
-            <div className="mt-auto px-8 pb-8">
+            <div className="mt-auto px-6 pb-6">
               <div className="flex justify-between items-end">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-600 to-blue-500 opacity-80"></div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-600 to-blue-500 opacity-80"></div>
                 <p className="text-xs opacity-70 text-right">
                   Esta tarjeta es propiedad de CrediArg.<br />
                   Uso autorizado únicamente.
@@ -137,5 +137,3 @@ const CreditCard: React.FC<CreditCardProps> = ({
     </div>
   );
 };
-
-export default CreditCard;

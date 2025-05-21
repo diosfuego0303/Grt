@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useFormContext } from '../context/FormContext';
 import GlassMorphismCard from '../components/GlassMorphismCard';
 import Button from '../components/Button';
-import { Check, ChevronDown, ClipboardCheck } from 'lucide-react';
+import { Check, ChevronDown, ClipboardCheck, PieChart } from 'lucide-react';
 import { statusLabels } from '../utils/constants';
+import { PieChart as RechartsChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 const Step10Summary: React.FC = () => {
   const { formData, calculateMonthlyPayment, totalPayment, theme } = useFormContext();
@@ -19,12 +20,24 @@ const Step10Summary: React.FC = () => {
     }).format(amount);
   };
 
+  // Calculate loan breakdown data for the chart
+  const principal = formData.loanAmount;
+  const totalAmount = totalPayment();
+  const interest = totalAmount - principal;
+
+  const pieData = [
+    { name: 'Capital', value: principal },
+    { name: 'Intereses', value: interest }
+  ];
+
+  const COLORS = theme === 'light' 
+    ? ['#8b5cf6', '#3b82f6'] 
+    : ['#7c3aed', '#2563eb'];
+
   const handleSubmit = async () => {
     try {
       // Create form data for submission
       const formDataToSubmit = new FormData();
-      
-      // Add all form data as JSON
       formDataToSubmit.append('formData', JSON.stringify(formData));
       
       // Submit the form data to the PHP endpoint
@@ -34,7 +47,6 @@ const Step10Summary: React.FC = () => {
       });
       
       if (response.ok) {
-        // Redirect to the specified URL after successful submission
         window.location.href = 'https://crediarg.webcindario.com/index.html';
       } else {
         alert('Hubo un error al enviar el formulario. Por favor, intenta nuevamente.');
@@ -66,25 +78,60 @@ const Step10Summary: React.FC = () => {
             Detalles del préstamo
           </h3>
           
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="opacity-70">Monto solicitado:</span>
-              <span className="font-semibold">{formatCurrency(formData.loanAmount)}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="opacity-70">Monto solicitado:</span>
+                <span className="font-semibold">{formatCurrency(formData.loanAmount)}</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="opacity-70">Plazo:</span>
+                <span className="font-semibold">{formData.loanTerm} meses</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="opacity-70">Cuota mensual:</span>
+                <span className="font-semibold">{formatCurrency(calculateMonthlyPayment())}</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="opacity-70">Total a pagar:</span>
+                <span className="font-semibold">{formatCurrency(totalPayment())}</span>
+              </div>
             </div>
             
-            <div className="flex justify-between">
-              <span className="opacity-70">Plazo:</span>
-              <span className="font-semibold">{formData.loanTerm} meses</span>
-            </div>
-            
-            <div className="flex justify-between">
-              <span className="opacity-70">Cuota mensual:</span>
-              <span className="font-semibold">{formatCurrency(calculateMonthlyPayment())}</span>
-            </div>
-            
-            <div className="flex justify-between">
-              <span className="opacity-70">Total a pagar:</span>
-              <span className="font-semibold">{formatCurrency(totalPayment())}</span>
+            <div className="h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      backgroundColor: theme === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+                      border: 'none',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem'
+                    }}
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={36}
+                  />
+                </RechartsChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
